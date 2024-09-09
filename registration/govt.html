@@ -5,22 +5,148 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Government Official Registration</title>
-  <link rel="stylesheet" href="/css/registration.css">
- 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url("background.jpeg");
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      height: 60px;
+      background-color: black;
+      z-index: 100;
+    }
+
+    .emblem {
+      margin-left: 10px;
+    }
+
+    .emblem-image {
+      height: 50px;
+      color: white;
+    }
+
+    .emblem2-image {
+      height: 30px;
+      color: white;
+      margin-left: 20px;
+      margin-bottom: 11px;
+    }
+
+    .container {
+      width: 50%;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #7ef081;
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    h2 {
+      text-align: center;
+      color: white;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      color: white;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e7e1e1;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .approval-section {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      color: #3e684b;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .approval-section label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .approval-section input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    input {
+      background-color: rgb(249, 227, 227);
+    }
+
+    .already-registered {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .already-registered a {
+      color: #4CAF50;
+      text-decoration: none;
+    }
+
+    .already-registered a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 
 <body>
 
   <header>
     <div class="emblem">
-      <img class="emblem-image" src="/photo/emblem.png">
-      <img class="emblem2-image" src="/photo/emblem2.png">
+      <img class="emblem-image" src="/photo/emblem.png" alt="Emblem Image">
+      <img class="emblem2-image" src="/photo/emblem2.png" alt="Emblem2 Image">
     </div>
   </header>
 
   <div class="container">
     <h2>Government Official Registration</h2>
-    <form action="submit_registration.php" method="POST">
+    <form id="registrationForm">
       <!-- Basic Information -->
       <div class="form-group">
         <label for="name">Full Name:</label>
@@ -80,50 +206,50 @@
   <script type="module">
     // Use the CDN for Supabase
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-    
+
     // Initialize Supabase
     const supabaseUrl = 'https://zcykxjftfyoxgyetlqev.supabase.co/';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjeWt4amZ0ZnlveGd5ZXRscWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU4NTY3NTEsImV4cCI6MjA0MTQzMjc1MX0.8hPLRbA_ofUzLDltLj9K0QCbm0krgWikXwg2R7zZdbU';
     const supabase = createClient(supabaseUrl, supabaseKey);
-    
+
     // Handle form submission
     const form = document.querySelector('#registrationForm');
     form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    
-    const name = document.querySelector('#name').value;
-    const email = document.querySelector('#email').value;
-    const password = document.querySelector('#password').value;
-    const department = document.querySelector('#department').value;
-    const position = document.querySelector('#position').value;
-    
-    // Debugging logs
-    console.log('Form Submission:');
-    console.log('Name:', name);
-    console.log('Email:', email);
-    console.log('Password:', password);
-    console.log('Department:', department);
-    console.log('Position:', position);
-    
-    try {
-    const { error } = await supabase
-    .from('official_registrations') // Table name
-    .insert([
-    { name, email, password, department, position }
-    ]);
-    
-    if (error) {
-    console.error('Supabase Insert Error:', error);
-    alert('Error registering: ' + error.message);
-    } else {
-    alert('Registration successful!');
-    }
-    } catch (err) {
-    console.error('Unexpected Error:', err);
-    alert('An unexpected error occurred');
-    }
+      event.preventDefault();
+
+      const name = document.querySelector('#name').value;
+      const email = document.querySelector('#email').value;
+      const password = document.querySelector('#password').value;
+      const department = document.querySelector('#department').value;
+      const position = document.querySelector('#position').value;
+
+      // Debugging logs
+      console.log('Form Submission:');
+      console.log('Name:', name);
+      console.log('Email:', email);
+      console.log('Password:', password);
+      console.log('Department:', department);
+      console.log('Position:', position);
+
+      try {
+        const { error } = await supabase
+          .from('official_registrations') // Table name
+          .insert([
+            { name, email, password, department, position }
+          ]);
+
+        if (error) {
+          console.error('Supabase Insert Error:', error);
+          alert('Error registering: ' + error.message);
+        } else {
+          alert('Registration successful!');
+        }
+      } catch (err) {
+        console.error('Unexpected Error:', err);
+        alert('An unexpected error occurred');
+      }
     });
-    </script>
+  </script>
 
 </body>
 
