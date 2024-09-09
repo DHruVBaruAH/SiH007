@@ -54,6 +54,8 @@ nav {
   width: 70%;
   height: 35px;
   border: none;
+  cursor: pointer;
+
 }
 
 .search-btn {
@@ -61,6 +63,7 @@ nav {
   width: 35px;
   margin-left: -6px;
   border: none;
+  cursor: pointer;
 }
 
 .container-btn {
@@ -80,6 +83,7 @@ nav {
   text-decoration: none;
   display: inline-block; /* Ensure the links behave like buttons */
   transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  cursor: pointer;
 }
 
 .container-btn a:hover {
