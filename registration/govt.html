@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -134,7 +133,6 @@
     }
   </style>
 </head>
-
 <body>
 
   <header>
@@ -204,12 +202,11 @@
   </div>
 
   <script type="module">
-    // Use the CDN for Supabase
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
     // Initialize Supabase
     const supabaseUrl = 'https://zcykxjftfyoxgyetlqev.supabase.co/';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjeWt4amZ0ZnlveGd5ZXRscWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU4NTY3NTEsImV4cCI6MjA0MTQzMjc1MX0.8hPLRbA_ofUzLDltLj9K0QCbm0krgWikXwg2R7zZdbU';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjeWt4amZ0ZnlveGd5ZXRscWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU4NTY3NTEsImV4cCI6MjA0MTQzMjc1MX0.8hPLRbA_ofUzLDltLj9K0QCbm0krgWikXwg2R7zZdbU'; // Replace with your actual key
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Handle form submission
@@ -223,34 +220,52 @@
       const department = document.querySelector('#department').value;
       const position = document.querySelector('#position').value;
 
-      // Debugging logs
-      console.log('Form Submission:');
-      console.log('Name:', name);
-      console.log('Email:', email);
-      console.log('Password:', password);
-      console.log('Department:', department);
-      console.log('Position:', position);
-
       try {
-        const { error } = await supabase
-          .from('official_registrations') // Table name
+        // Sign up the user with Supabase Auth
+        const { user, error: authError } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+        });
+
+        console.log('Supabase Auth Response:', { user, authError });
+
+        if (authError) {
+          console.error('Supabase Auth Error:', authError);
+          alert('Error during registration: ' + authError.message);
+          return;
+        }
+
+        // Check if user object is valid
+        if (!user || !user.id) {
+          throw new Error('User ID not found');
+        }
+
+        // If sign-up is successful, insert additional user details into the database
+        const { error: dbError } = await supabase
+          .from('official_registrations')
           .insert([
-            { name, email, password, department, position }
+            { 
+              name, 
+              email, 
+              department, 
+              position,
+              user_id: user.id // Link this record to the authenticated user
+            }
           ]);
 
-        if (error) {
-          console.error('Supabase Insert Error:', error);
-          alert('Error registering: ' + error.message);
+        if (dbError) {
+          console.error('Supabase Database Insert Error:', dbError);
+          alert('Error saving additional information: ' + dbError.message);
         } else {
           alert('Registration successful!');
         }
+
       } catch (err) {
         console.error('Unexpected Error:', err);
-        alert('An unexpected error occurred');
+        alert('An unexpected error occurred: ' + err.message);
       }
     });
   </script>
 
 </body>
-
 </html>
